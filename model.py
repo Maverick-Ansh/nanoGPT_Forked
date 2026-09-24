@@ -9,7 +9,7 @@ https://github.com/huggingface/transformers/blob/main/src/transformers/models/gp
 
 import math
 import inspect
-from dataclasses import dataclass
+from dataclasses import dataclass   
 
 import torch
 import torch.nn as nn
@@ -159,19 +159,19 @@ class GPT(nn.Module):
             n_params -= self.transformer.wpe.weight.numel()
         return n_params
 
-    def _init_weights(self, module):
-        if isinstance(module, nn.Linear):
-            torch.nn.init.normal_(module.weight, mean=0.0, std=0.02)
-            if module.bias is not None:
+    def _init_weights(self, module): "module is one linear layer "
+        if isinstance(module, nn.Linear): "this proves it "
+            torch.nn.init.normal_(module.weight, mean=0.0, std=0.02)"initialise weights "
+            if module.bias is not None: "if bias nhi mngta then "
                 torch.nn.init.zeros_(module.bias)
-        elif isinstance(module, nn.Embedding):
+        elif isinstance(module, nn.Embedding):"embedding table weights initialisation"
             torch.nn.init.normal_(module.weight, mean=0.0, std=0.02)
 
-    def forward(self, idx, targets=None):
-        device = idx.device
-        b, t = idx.size()
+    def forward(self, idx, targets=None):  "idx is bt thats coming inside"
+        device = idx.device      "get into gpu"
+        b, t = idx.size()       "just var giving"
         assert t <= self.config.block_size, f"Cannot forward sequence of length {t}, block size is only {self.config.block_size}"
-        pos = torch.arange(0, t, dtype=torch.long, device=device) # shape (t)
+        pos = torch.arange(0, t, dtype=torch.long, device=device) "for positon getting from the thing."
 
         # forward the GPT model itself
         tok_emb = self.transformer.wte(idx) # token embeddings of shape (b, t, n_embd)
